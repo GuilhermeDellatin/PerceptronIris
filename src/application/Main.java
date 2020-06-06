@@ -296,7 +296,6 @@ public class Main {
                 linhaBase2++;
 
                 //acumula tipo de classe inserida na base
-
                 if (separa.getClasseIris() == 1)
                     contaBase2Classe1++;
                 else if (separa.getClasseIris()==2)
