@@ -40,7 +40,7 @@ public class Perceptron {
         //resultado
         List<Iris> listaResultado = new ArrayList<Iris>();
 
-        double y=0, d=0;
+        double y = 0, d = 0;
 
         //inicializa o bias
         for(int x = 0; x < base.length; x++){
@@ -92,6 +92,121 @@ public class Perceptron {
         //retorno da função soma
         y = soma;
         return y;
+    }
+
+    public double[] treinar(double[][] baseTreina) {
+        //inicializa vetor de pesos w
+        double[] w = new double[4];
+
+        //iniciliza vetor w (pesos)
+        for (int j = 0; j<w.length;j++) {
+            //inicializa w com pesos igual a zero
+            w[j] = 0;
+        }
+
+        //iniciliza X0 igual a Bias em todas as amostras da base de dados
+        for (int x = 0; x < baseTreina.length; x++) {
+            baseTreina[x][0] = this.bias;
+        }
+
+        //contador de iteracoes do aprendizado
+        int iteracao = 1;
+        //inicializa soma dos erros
+        double erro = 1;
+
+        //faça enquanto iteracao for menor que o máximo de iterações e
+        //enquanto erro for diferente de 0;
+        while (iteracao < this.maxIte && erro != 0) {
+
+            erro = 0;
+
+            //inicia loop de treinamento
+            for (int i = 0; i < baseTreina.length; i++) {
+                //inicializa fator de erro
+                double y = 0, soma = 0;
+
+                //variavel d --> resposta esperada
+                double d = baseTreina[i][5]; //ou 6***
+
+                //calcula a saida da função soma
+
+                soma = ((baseTreina[i][0] * w[0])+
+                        (baseTreina[i][1] * w[1])+
+                        (baseTreina[i][2] * w[2])+
+                        (baseTreina[i][3] * w[3]));
+
+                //função de ativação binária
+                if (soma > 0) y = 1;
+                else y = 0;
+
+                //realiza o aprendizado supervisionado
+                //verifica a resposta calculada com a esperada
+                if (y != d) {
+                    //atualizar o vetor de pesos w
+                    for (int j = 0; j < w.length; j++) {
+                        //formula aprendizado
+                        w[j] = w[j] + this.alfa * (d - y) * baseTreina[i][j];
+                    }
+
+                    //acumula erro
+                    erro = erro + Math.pow((d - y), 2);
+
+                }
+
+            }
+
+            iteracao++;
+        }
+
+        return w;
+    }
+
+    //testar treinamento com a base teste
+    public Estatistica testarTreinamento(double[][] baseTeste, double[] w) {
+        List<Iris> listaResultado = new ArrayList<Iris>();
+
+        int[] classificacao = new int[baseTeste.length];
+
+        int vp = 0, vn = 0, fp = 0, fn = 0;
+
+        //inicializa X0 igual ao Bias em todas as amostras da base
+        for(int x = 0; x < baseTeste.length; x++) {
+            baseTeste[x][0] = this.bias;
+        }
+
+        //inicia loop para classificação de dados
+        for(int i = 0; i < baseTeste.length; i++) {
+            //inicializa fator erro
+            double y = 0, soma = 0;
+
+            //inicializa variavel com resultado esperado
+            double d = baseTeste[i][5];
+
+            //calcula a saida da função de ativação e função soma
+            soma = 0;
+            for(int x = 0; x < w.length; x++) {
+                soma = soma + (baseTeste[i][x] * w[x]);
+            }
+
+            //saida neuronio
+            if (soma > 0) y = 1;
+            else y = 0;
+
+            if(y == d) {
+                if (d == 0) vn++;
+                else vp++;
+            }
+            else {
+                if (d ==  0) fn++;
+                else fp++;
+            }
+        }
+
+        Estatistica estatistica = new Estatistica(String.valueOf(vp),
+                String.valueOf(vn),
+                String.valueOf(fp),
+                String.valueOf(fn));
+        return estatistica;
     }
 
 }
