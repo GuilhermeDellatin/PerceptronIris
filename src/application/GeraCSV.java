@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-public class geraCSV {
+public class GeraCSV {
     static public void geraCSV(List<Estatistica> listaEstatistica, String nomeArquivo) throws IOException {
         String[] cabecalho = {"VP","VN","FP","FN"};
 

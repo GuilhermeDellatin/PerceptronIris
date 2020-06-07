@@ -2,9 +2,12 @@ package application;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static application.GeraCSV.geraCSV;
 
 public class Main {
 
@@ -17,7 +20,7 @@ public class Main {
     static public double[][] baseTeste;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //Lista resultado final
         List<Estatistica> listaResultadoFinal = new ArrayList<Estatistica>();
 
@@ -31,6 +34,71 @@ public class Main {
         //boolean normalizarBase = false;
         boolean gerarValidacaoBase = true;
         boolean normalizarBase = true;
+
+
+        String arquivo = "C:/Users/GuiO.o/Downloads/Base Iris/iris.data";
+        List<Iris> base = readFile(arquivo);
+
+        if (normalizarBase) baseDados = normalizarBase(base);
+        else baseDados = base;
+
+        //monta laço para N testes
+        for(int nroTestes = 0; nroTestes <= 999; nroTestes++) {
+            double[] wC1;
+            double[] wC2;
+            double[] wC3;
+
+            /*----------Treinamento dos neuronios -----------*/
+            //definir o neuronio para identificação de iris de classe 1
+            Perceptron redeNeural1 = new Perceptron();
+            redeNeural1.setAlfa(taxaAprendizado);
+            redeNeural1.setBias(bias);
+            redeNeural1.setNET(bias);
+            redeNeural1.setW(pesoW);
+            redeNeural1.setMaxIte(numeroIteracoes);
+
+            //sorteia bases para classe 1
+            sorteiaBases(baseDados, gerarValidacaoBase, 1);
+            wC1 = redeNeural1.treinar(baseTreina);
+
+            Perceptron redeNeural2 = new Perceptron();
+            redeNeural2.setAlfa(taxaAprendizado);
+            redeNeural2.setBias(bias);
+            redeNeural2.setNET(bias);
+            redeNeural2.setW(pesoW);
+            redeNeural2.setMaxIte(numeroIteracoes);
+
+            atualizaBases(2);
+            wC2 = redeNeural2.treinar(baseTreina);
+
+            Perceptron redeNeural3 = new Perceptron();
+            redeNeural3.setAlfa(taxaAprendizado);
+            redeNeural3.setBias(bias);
+            redeNeural3.setNET(bias);
+            redeNeural3.setW(pesoW);
+            redeNeural3.setMaxIte(numeroIteracoes);
+
+            atualizaBases(3);
+            wC3 = redeNeural3.treinar(baseTreina);
+
+            Perceptron redeNeuralSaida = new Perceptron();
+            redeNeuralSaida.setAlfa(taxaAprendizado);
+            redeNeuralSaida.setBias(bias);
+            redeNeuralSaida.setNET(bias);
+            redeNeuralSaida.setW(pesoW);
+            redeNeuralSaida.setMaxIte(numeroIteracoes);
+
+            List<Iris> baseClassificada = redeNeuralSaida.executarRNA(baseTeste, wC1, wC2, wC3);
+
+            int acertos = 0, erros = 0;
+            for (Iris iris : baseClassificada) {
+                if (iris.getClasseIris() == iris.getClassificacao()) acertos++;
+                else erros++;
+            }
+            Estatistica estatistica = new Estatistica(String.valueOf(acertos), String.valueOf(erros), "", "");
+            listaResultadoFinal.add(estatistica);
+        }
+        geraCSV(listaResultadoFinal,"resultadoFinal.csv");
     }
 
     static private List<Iris> readFile(String arquivo) {
@@ -57,6 +125,7 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Erro" + e);
+            e.printStackTrace();
         }
 
         return listaBase;
