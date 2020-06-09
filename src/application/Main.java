@@ -33,10 +33,10 @@ public class Main {
         double[] pesoW = {0, 0, 0, 0};
         int numeroIteracoes = 20000;
 
-        //boolean gerarValidacaoBase = false;
-        //boolean normalizarBase = false;
-        boolean gerarValidacaoBase = true;
-        boolean normalizarBase = true;
+        boolean gerarValidacaoBase = false;
+        boolean normalizarBase = false;
+        //boolean gerarValidacaoBase = true;
+        //boolean normalizarBase = true;
 
 
         String arquivo = "C:/Users/GuiO.o/Downloads/Base Iris/iris.data";
@@ -115,10 +115,14 @@ public class Main {
             Estatistica estatistica = new Estatistica(String.valueOf(acertos), String.valueOf(erros), "", "");
             listaResultadoFinal.add(estatistica);
         }
-        geraCSV(listaEstatisticaN1,"neuronio1.csv");
-        geraCSV(listaEstatisticaN2,"neuronio2.csv");
-        geraCSV(listaEstatisticaN3,"neuronio3.csv");
-        geraCSV(listaResultadoFinal,"resultadoFinal.csv");
+        //geraCSV(listaEstatisticaN1,"neuronio1.csv");
+        //geraCSV(listaEstatisticaN2,"neuronio2.csv");
+        //geraCSV(listaEstatisticaN3,"neuronio3.csv");
+        //geraCSV(listaResultadoFinal,"resultadoFinal.csv");
+        geraCSV(listaEstatisticaN1,"neuronio1SemNormalizarBase.csv");
+        geraCSV(listaEstatisticaN2,"neuronio2SemNormalizarBase.csv");
+        geraCSV(listaEstatisticaN3,"neuronio3SemNormalizarBase.csv");
+        geraCSV(listaResultadoFinal,"resultadoFinalSemNormalizarBase.csv");
     }
 
     static private List<Iris> readFile(String arquivo) {
