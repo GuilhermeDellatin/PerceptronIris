@@ -14,8 +14,7 @@ public class GeraCSV {
         Writer writer = new FileWriter(nomeArquivo);
         CSVWriter csvWriter = new CSVWriter(writer);
         csvWriter.writeNext(cabecalho);
-        for(Estatistica estatistica : listaEstatistica)
-        {
+        for(Estatistica estatistica : listaEstatistica) {
             String[] linha = {estatistica.getVP(),  estatistica.getVN(), estatistica.getFP(), estatistica.getFN()};
             csvWriter.writeNext(linha);
         }

@@ -7,9 +7,9 @@ public class Iris {
    3. petal length in cm
    4. petal width in cm
    5. class:
-    -- Iris Setosa
-    -- Iris Versicolour
-    -- Iris Virginica
+        1 -- Iris Setosa
+        2 -- Iris Versicolour
+        3 -- Iris Virginica
     */
     private double a1, a2, a3, a4;
     private int classeIris;

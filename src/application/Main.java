@@ -23,6 +23,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         //Lista resultado final
         List<Estatistica> listaResultadoFinal = new ArrayList<Estatistica>();
+        List<Estatistica> listaEstatisticaN1 = new ArrayList<Estatistica>();
+        List<Estatistica> listaEstatisticaN2 = new ArrayList<Estatistica>();
+        List<Estatistica> listaEstatisticaN3 = new ArrayList<Estatistica>();
 
         //Definir os padrões de execução da rede neural
         double bias = 1;
@@ -61,6 +64,11 @@ public class Main {
             sorteiaBases(baseDados, gerarValidacaoBase, 1);
             wC1 = redeNeural1.treinar(baseTreina);
 
+            //Testando neuronio1
+            Estatistica estatisticaNeuronio1 = redeNeural1.testarTreinamento(baseTeste, wC1);
+            listaEstatisticaN1.add(estatisticaNeuronio1);
+
+            //definir o neuronio para identificação de iris de classe 2
             Perceptron redeNeural2 = new Perceptron();
             redeNeural2.setAlfa(taxaAprendizado);
             redeNeural2.setBias(bias);
@@ -71,6 +79,11 @@ public class Main {
             atualizaBases(2);
             wC2 = redeNeural2.treinar(baseTreina);
 
+            //Testando neuronio2
+            Estatistica estatisticaNeuronio2 = redeNeural2.testarTreinamento(baseTeste, wC2);
+            listaEstatisticaN2.add(estatisticaNeuronio2);
+
+            //definir o neuronio para identificação de iris de classe 3
             Perceptron redeNeural3 = new Perceptron();
             redeNeural3.setAlfa(taxaAprendizado);
             redeNeural3.setBias(bias);
@@ -80,6 +93,10 @@ public class Main {
 
             atualizaBases(3);
             wC3 = redeNeural3.treinar(baseTreina);
+
+            //Testando neuronio3
+            Estatistica estatisticaNeuronio3 = redeNeural3.testarTreinamento(baseTeste, wC3);
+            listaEstatisticaN3.add(estatisticaNeuronio3);
 
             Perceptron redeNeuralSaida = new Perceptron();
             redeNeuralSaida.setAlfa(taxaAprendizado);
@@ -98,6 +115,9 @@ public class Main {
             Estatistica estatistica = new Estatistica(String.valueOf(acertos), String.valueOf(erros), "", "");
             listaResultadoFinal.add(estatistica);
         }
+        geraCSV(listaEstatisticaN1,"neuronio1.csv");
+        geraCSV(listaEstatisticaN2,"neuronio2.csv");
+        geraCSV(listaEstatisticaN3,"neuronio3.csv");
         geraCSV(listaResultadoFinal,"resultadoFinal.csv");
     }
 
@@ -112,11 +132,12 @@ public class Main {
                 //Os valores na linha são definidos pelo separador ","
                 String[] valueFields = linhaBase.split(",");
                 Iris iris = new Iris();
-                iris.setClasseIris(Integer.parseInt(valueFields[0]));
-                iris.setA1(Double.parseDouble(valueFields[1]));
-                iris.setA2(Double.parseDouble(valueFields[2]));
-                iris.setA3(Double.parseDouble(valueFields[3]));
-                iris.setA4(Double.parseDouble(valueFields[4]));
+
+                iris.setA1(Double.parseDouble(valueFields[0]));
+                iris.setA2(Double.parseDouble(valueFields[1]));
+                iris.setA3(Double.parseDouble(valueFields[2]));
+                iris.setA4(Double.parseDouble(valueFields[3]));
+                iris.setClasseIris(Integer.parseInt(valueFields[4]));
 
                 listaBase.add(iris);
 
@@ -124,7 +145,7 @@ public class Main {
             base.close();
 
         } catch (Exception e) {
-            System.out.println("Erro" + e);
+            //System.out.println("Erro" + e);
             e.printStackTrace();
         }
 
@@ -254,7 +275,7 @@ public class Main {
 
         //declara o tamanho de cada base
         int tamBaseTreina = 0, tamBaseValida = 0, tamBaseTeste = 0;
-        if(numBaseValidaC1>0) {
+        if(numBaseValidaC1 > 0) {
             //se houver validação
             tamBaseTreina = numBaseTreinaC1 + numBaseTreinaC2 + numBaseTreinaC3;
             tamBaseValida = numBaseValidaC1 + numBaseValidaC2 + numBaseValidaC3;
@@ -401,12 +422,12 @@ public class Main {
         int tamBaseTeste = baseTeste.length;
         int tamBaseValida = 0;
 
-        if (!(baseValidacao==null)) {
+        if (!(baseValidacao == null)) {
             tamBaseValida=baseValidacao.length;
         }
 
         int valorD = 1;
-        for (int x=0; x < tamBaseTreina; x++) {
+        for (int x = 0; x < tamBaseTreina; x++) {
             if(baseTreina[x][4] == classe) baseTreina[x][5] = valorD;
             else baseTreina[x][5] = 0;
         }
